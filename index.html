@@ -18,30 +18,36 @@
                <p>Below is the editor generated from the JSON Schema with the help from <a href="https://github.com/jdorn/json-editor">json-editor</a> by <a href="https://github.com/jdorn">@jdorn</a>.</p>
 
                <br>
-               <form>
-                 <div class="form-group">
-                   <label for="exampleInputEmail1">Get PubChem ID for any compound</label>
-                   <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Compound name in IUPAC or rational nomenclature">
+               <div class="row">
+                 <div class="col-md-9">
+                   <div id='editor'></div>
+                   <button id="submit" class="btn btn-success" type="submit">Add reaction</button>
+                   <br><br><br>
+                   <p>Resulting JSON. <b>TODO: automatic pasting into the database</b></p>
+                   <textarea id='output' style='width: 100%; height: 300px; font-family: monospace;' class='form-control'></textarea>
+                   <br><br>
                  </div>
-                 <button type="button" class="btn btn-default" id="getPCID">Get PubChem ID</button>
-                 <br><br>
-                 <div class="row">
-                   <div class="col-md-3">
-                   <label id="PCID">Result will be displayed here</label>
-                 </div>
-                 <div class="col-md-11">
-                   <img src="http://vignette3.wikia.nocookie.net/plants-vs-zombies-roleplay/images/6/60/Question_Mark.png/revision/latest?cb=20140425200212" alt="Compound image by CID" width="250px" height="250px" id="compoundImage">
-                 </div>
-                 </div>
-                </form>
-               <br>
+                 <div class="col-md-3">
+                 <form>
+                   <div class="form-group">
+                    <br><br><br>
+                     <label for="exampleInputEmail1">Get PubChem ID for any compound by it's IUPAC or rational name</label>
+                     <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Use IUPAC or rational nomenclature">
+                   </div>
+                   <button type="button" class="btn btn-default" id="getPCID">Get PubChem ID</button>
+                   <br><br>
 
-               <div id='editor'></div>
-               <button id="submit" class="btn btn-success" type="submit">Add reaction</button>
-               <br><br><br>
-               <p>Resulting JSON. <b>TODO: automatic pasting into the database</b></p>
-               <textarea id='output' style='width: 100%; height: 300px; font-family: monospace;' class='form-control'></textarea>
-               <br><br>
+
+                     <label id="PCID">Result will be displayed here</label>
+
+
+                     <img src="http://vignette3.wikia.nocookie.net/plants-vs-zombies-roleplay/images/6/60/Question_Mark.png/revision/latest?cb=20140425200212" alt="Compound image by CID" width="250px" height="250px" id="compoundImage">
+
+
+                  </form>
+                 <br>
+               </div>
+               </div>
            </div>
        </div>
    </div>
@@ -109,6 +115,28 @@
               "type": "string",
               "format": "textarea",
               "description": "TODO: Add a markdown editor"
+            },
+
+            "sources": {
+              "type": "array",
+              "format": "table",
+              "title": "Sources",
+              "uniqueItems": true,
+              "items": {
+                "type": "object",
+                "title": "Source",
+                "properties": {
+                  "fullBibliograficInfo": {
+                   "type": "string"
+                  },
+                  "DOI": {
+                   "type": "string"
+                  }
+                }
+              },
+              "options": {
+                "disable_array_delete_last_row": true
+              }
             }
           }
         },
@@ -126,9 +154,10 @@
       display.value = JSON.stringify(finaljson);
     });
 
-    // Getting the PCID
+    var user_input = document.getElementById('exampleInputEmail1').value;
 
-    document.getElementById('getPCID').addEventListener('click', function() {
+
+    function searchByCompoundName() {
       console.log("button pressed");
       var user_input = document.getElementById('exampleInputEmail1').value;
       console.log(user_input);
@@ -172,7 +201,25 @@
 
         }
       });
-});
+    }
+
+    // Getting the PCID and image by the enter key
+    document.getElementById('exampleInputEmail1').addEventListener('keypress', function(e){
+      var key = e.which || e.keyCode;
+      if (key === 13) {
+        e.preventDefault();
+        console.log('hello world');
+        searchByCompoundName();
+      }
+      return;
+    });
+
+
+    // Getting the PCID and image by the button press
+
+    document.getElementById('getPCID').addEventListener('click', function() {
+      searchByCompoundName();
+    });
 
    </script>
 
