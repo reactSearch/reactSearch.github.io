@@ -8,6 +8,9 @@
        <script type="text/javascript" src="js/jquery-3.1.1.min.js"></script>
        <script type="text/javascript" src="bs/js/bootstrap.min.js"></script>
        <script type="text/javascript" src='js/jsoneditor.js'></script>
+       <link rel="stylesheet" href="./minified/themes/default.min.css" type="text/css" media="all" />
+       <script type="text/javascript" src="./minified/jquery.sceditor.bbcode.min.js"></script>
+
  </head>
  <body>
    <div class='container'>
@@ -113,8 +116,10 @@
 
             "procedure": {
               "type": "string",
-              "format": "textarea",
-              "description": "TODO: Add a markdown editor"
+              "format": "html",
+              "options": {
+                "wysiwyg": true
+              }
             },
 
             "sources": {
