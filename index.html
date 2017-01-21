@@ -1,7 +1,7 @@
 <!DOCTYPE html>
    <html lang="en">
      <head>
-       <title>Page title</title>
+       <title>reactSearch DB GUI</title>
        <meta name="viewport" content="width=device-width, initial-scale=1">
        <link href="bs/css/bootstrap.min.css" rel="stylesheet">
        <link href="bs/css/bootstrap-theme.min.css" rel="stylesheet">
@@ -17,10 +17,29 @@
                <h2>reactSearch Database GUI</h2>
                <p>Below is the editor generated from the JSON Schema with the help from <a href="https://github.com/jdorn/json-editor">json-editor</a> by <a href="https://github.com/jdorn">@jdorn</a>.</p>
 
+               <br>
+               <form>
+                 <div class="form-group">
+                   <label for="exampleInputEmail1">Get PubChem ID for any compound</label>
+                   <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Compound name in IUPAC, rational or SMILES nomenclature">
+                 </div>
+                 <button type="button" class="btn btn-default" id="getPCID">Get PubChem ID</button>
+                 <br><br>
+                 <div class="row">
+                   <div class="col-md-3">
+                   <label id="PCID">Result will be displayed here</label>
+                 </div>
+                 <div class="col-md-11">
+                   <img src="http://vignette3.wikia.nocookie.net/plants-vs-zombies-roleplay/images/6/60/Question_Mark.png/revision/latest?cb=20140425200212" alt="Compound image by CID" width="250px" height="250px" id="compoundImage">
+                 </div>
+                 </div>
+                </form>
+               <br>
+
                <div id='editor'></div>
                <button id="submit" class="btn btn-success" type="submit">Add reaction</button>
                <br><br><br>
-               <p>Resulting JSON. TODO: automatic pasting into the database</p>
+               <p>Resulting JSON. <b>TODO: automatic pasting into the database</b></p>
                <textarea id='output' style='width: 100%; height: 300px; font-family: monospace;' class='form-control'></textarea>
                <br><br>
            </div>
@@ -106,6 +125,55 @@
       var finaljson = editor.getValue();
       display.value = JSON.stringify(finaljson);
     });
+
+    // Getting the PCID
+
+    document.getElementById('getPCID').addEventListener('click', function() {
+      console.log("button pressed");
+      var user_input = document.getElementById('exampleInputEmail1').value;
+      console.log(user_input);
+
+      var urlToParseForCID = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/"+user_input+"/JSON";
+      console.log(urlToParseForCID);
+
+      var finalCID;
+
+      var getJSON = function(url, callback) {
+        var xhr = new XMLHttpRequest();
+        xhr.open("get", url, true);
+        xhr.responseType = "json";
+        xhr.onload = function() {
+          var status = xhr.status;
+          if (status == 200) {
+            callback(null, xhr.response);
+          } else {
+            callback(status);
+          }
+        };
+        xhr.send();
+    };
+
+    getJSON(urlToParseForCID,
+      function(err, data) {
+        if (err != null) {
+          finalCID = "Sorry, something went wrong! Probably, PubChem doesn't have a record on this compound yet."
+          var pcidOutput = document.getElementById('PCID');
+          pcidOutput.innerText = finalCID;
+          var noImage = "http://vignette3.wikia.nocookie.net/plants-vs-zombies-roleplay/images/6/60/Question_Mark.png/revision/latest?cb=20140425200212";
+          document.getElementById('compoundImage').src = noImage;
+        } else {
+          console.log(data.PC_Compounds[0].id.id.cid);
+          finalCID = data.PC_Compounds[0].id.id.cid;
+          var pcidOutput = document.getElementById('PCID');
+          pcidOutput.innerText = "Result for "+user_input+": "+finalCID;
+
+          var imageFromPubChem = 'https://pubchem.ncbi.nlm.nih.gov/image/imagefly.cgi?cid='+finalCID+'&width=250&height=250';
+          document.getElementById('compoundImage').src = imageFromPubChem;
+
+        }
+      });
+});
+
    </script>
 
  </body>
