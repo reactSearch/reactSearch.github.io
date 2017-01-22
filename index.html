@@ -111,7 +111,11 @@
 
             "catalysts": {
               "type": "string",
-              "description": "What catalyses the reaction?"
+              "description": "What catalyses the reaction?",
+              "format": "html",
+              "options": {
+                "wysiwyg": true
+              }
             },
 
             "procedure": {
@@ -156,7 +160,7 @@
       console.log(editor.getValue());
       var display = document.getElementById('output');
       var finaljson = editor.getValue();
-      display.value = JSON.stringify(finaljson);
+      display.value = JSON.stringify(finaljson) + ",";
     });
 
     var user_input = document.getElementById('exampleInputEmail1').value;
@@ -190,9 +194,9 @@
     getJSON(urlToParseForCID,
       function(err, data) {
         if (err != null) {
-          finalCID = "Sorry, something went wrong! Probably, PubChem doesn't have a record on this compound yet."
+          finalCID = "Sorry, something went wrong! Probably, PubChem doesn't have a record on ";
           var pcidOutput = document.getElementById('PCID');
-          pcidOutput.innerText = finalCID;
+          pcidOutput.innerText = finalCID + user_input + " yet.";
           var noImage = "http://vignette3.wikia.nocookie.net/plants-vs-zombies-roleplay/images/6/60/Question_Mark.png/revision/latest?cb=20140425200212";
           document.getElementById('compoundImage').src = noImage;
         } else {
