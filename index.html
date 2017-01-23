@@ -63,24 +63,6 @@
           "type": "object",
           "properties": {
 
-            "reagents": {
-              "type": "array",
-              "format": "table",
-              "title": "Initial reagents",
-              "description": "Insert the PubChem IDs of the initial reagents (one at a time)",
-              "uniqueItems": true,
-              "items": {
-                "type": "integer",
-                "title": "reagent's PubChem ID"
-              },
-              "default": [
-                0
-              ],
-              "options": {
-                "disable_array_delete_last_row": true
-              }
-            },
-
             "products": {
               "type": "array",
               "format": "table",
