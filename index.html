@@ -1,3 +1,11 @@
+<!--
+  This is the reactSearch reactions database graphical user interface for adding new reaction.
+  Developed by reactSearch team developer @mawansui (Maxim Shevelev).
+  Being actively maintained and used by the team.
+  (c) reactSearch team, 2017, Kazan, Russia.
+-->
+
+
 <!DOCTYPE html>
    <html lang="en">
      <head>
@@ -18,7 +26,8 @@
            <div class='span12 col-md-12 columns twelve large-12'>
 
                <h2>reactSearch Database GUI</h2>
-               <p>Below is the editor generated from the JSON Schema with the help from <a href="https://github.com/jdorn/json-editor">json-editor</a> by <a href="https://github.com/jdorn">@jdorn</a>.</p>
+               <p>The editor is generated from the JSON Schema with the help from <a href="https://github.com/jdorn/json-editor">json-editor</a> made by <a href="https://github.com/jdorn">@jdorn</a>.</p>
+               <p>The PubChem parser on the right was made and is actively maintained by <a href="https://github.com/mawansui">@mawansui</a> from the <a href="https://github.com/reactSearch">reactSearch team</a>.</p>
 
                <br>
                <div class="row">
@@ -83,7 +92,17 @@
 
             "reactionImageLink": {
               "type": "string",
-              "description": "Reaction overview image link (chemical equation image), preferably in PNG. EXAMPLE: https://raw.github.com/mawansui/reactions/id0.png"
+              "description": "Reaction overview image link (chemical equation image), preferably in PNG. SHOULD BE HOSTED ON AN HTTPS-ENCRYPTED SERVER! EXAMPLE: https://raw.github.com/mawansui/reactions/id0.png"
+            },
+
+            "imageWidth": {
+              "type": "integer",
+              "description": "First number in 1024 x 680."
+            },
+
+            "imageHeight": {
+              "type": "integer",
+              "description": "Second number in 1024 x 680."
             },
 
             "conditions": {
@@ -135,7 +154,7 @@
               "type": "array",
               "format": "table",
               "title": "Keywords to search by",
-              "description": "Type in the keywords by which users will be able to search for this reaction.",
+              "description": "Type in the keywords by which users will be able to search for this reaction. Example: decarboxylation, hydrogentaion, oxidation, ...",
               "uniqueItems": true,
               "items": {
                 "type": "string",
@@ -145,6 +164,198 @@
                 "disable_array_delete_last_row": true
               }
             },
+
+            "functionalGroups": {
+              "type": "array",
+              "format": "table",
+              "title": "Functional groups to search by",
+              "options": {
+                "disable_array_delete_last_row": true
+              },
+              "description": "Choose the functional group present in the initial reagent and then choose to which it transforms as a result of the reaction you are describing.",
+              "items": {
+                "type": "object",
+                "title": "funcGroup",
+                "properties": {
+                  "from": {
+                    "type": "string",
+                    "enum": [
+                      "- Hydrocarbons -",
+                      "Alkyl",
+                      "Alkenyl",
+                      "Alkynyl",
+                      "Phenyl",
+                      " ",
+                      "- With halogen -",
+                      "Halo",
+                      "Fluoro",
+                      "Chloro",
+                      "Bromo",
+                      "Iodo",
+                      " ",
+                      "- With oxygen -",
+                      "Hydroxyl",
+                      "Carbonyl",
+                      "Aldehyde",
+                      "Haloformyl",
+                      "Carbonate ester",
+                      "Carboxylate",
+                      "Carboxyl",
+                      "Ester",
+                      "Methoxy",
+                      "Hydroperoxy",
+                      "Peroxy",
+                      "Ether",
+                      "Hemiacetal",
+                      "Hemiketal",
+                      "Acetal",
+                      "Ketal",
+                      "Orthoester",
+                      "Methylenedioxy",
+                      "Orthocarbonate ester",
+                      " ",
+                      "- With nitrogen -",
+                      "Carboxamide",
+                      "Primary amine",
+                      "Secondary amine",
+                      "Tertiary amine",
+                      "4° ammonium ion",
+                      "Primary ketimine",
+                      "Secondary ketimine",
+                      "Primary aldimine",
+                      "Secondary aldimine",
+                      "Imide",
+                      "Azide",
+                      "Azo (Diimide)",
+                      "Cyanate",
+                      "Isocyanate",
+                      "Nitrate",
+                      "Nitrile",
+                      "Isonitrile",
+                      "Nitrosooxy",
+                      "Nitro",
+                      "Nitroso",
+                      "Oxime",
+                      "Pyridyl",
+                      " ",
+                      "- With sulfur -",
+                      "Sulfhydryl",
+                      "Sulfide",
+                      "Disulfide",
+                      "Sulfinyl",
+                      "Sulfonyl",
+                      "Sulfino",
+                      "Sulfo",
+                      "Thiocyanate",
+                      "Isothiocyanate",
+                      "Carbonothioyl",
+                      "Carbonothioyl",
+                      " ",
+                      "- With phosphorous -",
+                      "Phosphino",
+                      "Phosphono",
+                      "Phosphate",
+                      "Phosphate",
+                      " ",
+                      "- With boron -",
+                      "Borono",
+                      "Boronate",
+                      "Borino",
+                      "Borinate"
+                    ]
+                  },
+                  "to": {
+                    "type": "string",
+                    "enum": [
+                      "- Hydrocarbons -",
+                      "Alkyl",
+                      "Alkenyl",
+                      "Alkynyl",
+                      "Phenyl",
+                      " ",
+                      "- With halogen -",
+                      "Halo",
+                      "Fluoro",
+                      "Chloro",
+                      "Bromo",
+                      "Iodo",
+                      " ",
+                      "- With oxygen -",
+                      "Hydroxyl",
+                      "Carbonyl",
+                      "Aldehyde",
+                      "Haloformyl",
+                      "Carbonate ester",
+                      "Carboxylate",
+                      "Carboxyl",
+                      "Ester",
+                      "Methoxy",
+                      "Hydroperoxy",
+                      "Peroxy",
+                      "Ether",
+                      "Hemiacetal",
+                      "Hemiketal",
+                      "Acetal",
+                      "Ketal",
+                      "Orthoester",
+                      "Methylenedioxy",
+                      "Orthocarbonate ester",
+                      " ",
+                      "- With nitrogen -",
+                      "Carboxamide",
+                      "Primary amine",
+                      "Secondary amine",
+                      "Tertiary amine",
+                      "4° ammonium ion",
+                      "Primary ketimine",
+                      "Secondary ketimine",
+                      "Primary aldimine",
+                      "Secondary aldimine",
+                      "Imide",
+                      "Azide",
+                      "Azo (Diimide)",
+                      "Cyanate",
+                      "Isocyanate",
+                      "Nitrate",
+                      "Nitrile",
+                      "Isonitrile",
+                      "Nitrosooxy",
+                      "Nitro",
+                      "Nitroso",
+                      "Oxime",
+                      "Pyridyl",
+                      " ",
+                      "- With sulfur -",
+                      "Sulfhydryl",
+                      "Sulfide",
+                      "Disulfide",
+                      "Sulfinyl",
+                      "Sulfonyl",
+                      "Sulfino",
+                      "Sulfo",
+                      "Thiocyanate",
+                      "Isothiocyanate",
+                      "Carbonothioyl",
+                      "Carbonothioyl",
+                      " ",
+                      "- With phosphorous -",
+                      "Phosphino",
+                      "Phosphono",
+                      "Phosphate",
+                      "Phosphate",
+                      " ",
+                      "- With boron -",
+                      "Borono",
+                      "Boronate",
+                      "Borino",
+                      "Borinate"
+                    ]
+                  }
+                }
+              }
+            }
+
+
           }
         },
         theme: 'bootstrap3',
