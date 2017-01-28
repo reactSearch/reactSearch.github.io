@@ -33,7 +33,14 @@
                <div class="row">
                  <div class="col-md-9">
                    <div id='editor'></div>
+                   <br>
+                   <p><b>Type in the password to proceed:</b></p>
+                   <br>
+                   <input type="text" id="password"><br><br>
                    <button id="submit" class="btn btn-success" type="submit">Add reaction</button>
+                   <br>
+                   <br>
+                   <p id="uploadStatus">Upload status</p>
                    <br><br><br>
                    <p>Resulting JSON. <b>TODO: automatic pasting into the database</b></p>
                    <textarea id='output' style='width: 100%; height: 300px; font-family: monospace;' class='form-control'></textarea>
@@ -369,20 +376,22 @@
       console.log(editor.getValue());
       var display = document.getElementById('output');
       var finaljson = editor.getValue(); // I need this!
+      console.log("** * * ** * * *");
+      console.log(JSON.stringify(finaljson));
+      var password = document.getElementById('password').value;
+      var statusLabel = document.getElementById('uploadStatus');
+      // statusLabel.innerText = password;
 
-      $.post("https://reactsearchdb.herokuapp.com/api/savedata", finaljson, function(){
-        console.log('Success? I guess?');
-      });
-      // var req = new XMLHttpRequest();
-      // console.log('Starting POST');
-      // req.open('POST', 'https://reactsearchdb.herokuapp.com/api/savedata');
-      // req.send(JSON.stringify(finaljson));
-      // console.log(JSON.stringify(finaljson));
-      // console.log('Finished POST');
-      //
-      // display.value = JSON.stringify(finaljson) + ",";
+      if (password == "osresearch17") {
 
-      console.log('nothing happened');
+        $.post("https://reactsearchdb.herokuapp.com/api/savedata", finaljson, function(){
+          console.log('Success? I guess?');
+        });
+        display.value = JSON.stringify(finaljson);
+        statusLabel.innerText = "Upload successful! Feel free to reload the page and work on the next reaction, if you prefer."
+      } else {
+        statusLabel.innerText = "Sorry, you\'ve typed in an incorrect password. Upload unsuccessful."
+      }
     });
 
     var user_input = document.getElementById('exampleInputEmail1').value;
