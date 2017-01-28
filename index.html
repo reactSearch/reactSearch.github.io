@@ -368,7 +368,15 @@
     document.getElementById('submit').addEventListener('click', function() {
       console.log(editor.getValue());
       var display = document.getElementById('output');
-      var finaljson = editor.getValue();
+      var finaljson = editor.getValue(); // I need this!
+
+      var req = new XMLHttpRequest();
+      console.log('Starting POST');
+      req.open('POST', 'https://reactsearchdb.herokuapp.com/api/savedata');
+      req.send(JSON.stringify(finaljson));
+      console.log(JSON.stringify(finaljson));
+      console.log('Finished POST');
+
       display.value = JSON.stringify(finaljson) + ",";
     });
 
