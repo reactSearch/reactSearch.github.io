@@ -370,14 +370,19 @@
       var display = document.getElementById('output');
       var finaljson = editor.getValue(); // I need this!
 
-      var req = new XMLHttpRequest();
-      console.log('Starting POST');
-      req.open('POST', 'https://reactsearchdb.herokuapp.com/api/savedata');
-      req.send(JSON.stringify(finaljson));
-      console.log(JSON.stringify(finaljson));
-      console.log('Finished POST');
+      $.post("https://reactsearchdb.herokuapp.com/api/savedata", finaljson, function(){
+        console.log('Success? I guess?');
+      });
+      // var req = new XMLHttpRequest();
+      // console.log('Starting POST');
+      // req.open('POST', 'https://reactsearchdb.herokuapp.com/api/savedata');
+      // req.send(JSON.stringify(finaljson));
+      // console.log(JSON.stringify(finaljson));
+      // console.log('Finished POST');
+      //
+      // display.value = JSON.stringify(finaljson) + ",";
 
-      display.value = JSON.stringify(finaljson) + ",";
+      console.log('nothing happened');
     });
 
     var user_input = document.getElementById('exampleInputEmail1').value;
