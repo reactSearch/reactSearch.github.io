@@ -377,17 +377,26 @@
       var display = document.getElementById('output');
       var finaljson = editor.getValue(); // I need this!
       console.log("** * * ** * * *");
-      console.log(JSON.stringify(finaljson));
+      console.log(finaljson);
       var password = document.getElementById('password').value;
       var statusLabel = document.getElementById('uploadStatus');
       // statusLabel.innerText = password;
+      display.value = JSON.stringify(finaljson);
 
       if (password == "osresearch17") {
 
-        $.post("https://reactsearchdb.herokuapp.com/api/savedata", finaljson, function(){
-          console.log('Success? I guess?');
+        $.ajax({
+          type: 'POST',
+          url: 'https://reactsearchdb.herokuapp.com/api/savedata',
+          data: finaljson,
+          success: function(data) { alert("data: " + data); },
+          crossDomain: true,
+          dataType: 'application/json'
         });
-        display.value = JSON.stringify(finaljson);
+
+        // $.post("https://reactsearchdb.herokuapp.com/api/savedata", finaljson, function(){
+        //   console.log('Success? I guess?');
+        // });
         statusLabel.innerText = "Upload successful! Feel free to reload the page and work on the next reaction, if you prefer."
       } else {
         statusLabel.innerText = "Sorry, you\'ve typed in an incorrect password. Upload unsuccessful."
