@@ -27,7 +27,7 @@
 
                <h2>reactSearch Database GUI</h2>
                <p>The editor is generated from the JSON Schema with the help from <a href="https://github.com/jdorn/json-editor">json-editor</a> made by <a href="https://github.com/jdorn">@jdorn</a>.</p>
-               <p>The PubChem parser on the right was made and is actively maintained by <a href="https://github.com/mawansui">@mawansui</a> from the <a href="https://github.com/reactSearch">reactSearch team</a>.</p>
+               <p>The PubChem InChIKey parser on the right was made and is actively maintained by <a href="https://github.com/mawansui">@mawansui</a> from the <a href="https://github.com/reactSearch">reactSearch team</a>.</p>
 
                <br>
                <div class="row">
@@ -42,7 +42,7 @@
                    <br>
                    <p id="uploadStatus">Upload status</p>
                    <br><br><br>
-                   <p>Resulting JSON. <b>TODO: automatic pasting into the database</b></p>
+                   <p>Resulting JSON (just for you to look at it, it will paste automatically now!).</p>
                    <textarea id='output' style='width: 100%; height: 300px; font-family: monospace;' class='form-control'></textarea>
                    <br><br>
                  </div>
@@ -50,14 +50,14 @@
                  <form>
                    <div class="form-group">
                     <br><br><br>
-                     <label for="exampleInputEmail1">Get PubChem ID for any compound by it's IUPAC or rational name</label>
+                     <label for="exampleInputEmail1">Get InChIKey for any compound by it's IUPAC or rational name</label>
                      <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Use IUPAC or rational nomenclature">
                    </div>
-                   <button type="button" class="btn btn-default" id="getPCID">Get PubChem ID</button>
+                   <button type="button" class="btn btn-default" id="getINCHIKEY">Get InChIKey</button>
                    <br><br>
 
 
-                     <label id="PCID">Result will be displayed here</label>
+                     <label id="KEY">Result will be displayed here</label>
 
 
                      <img src="http://vignette3.wikia.nocookie.net/plants-vs-zombies-roleplay/images/6/60/Question_Mark.png/revision/latest?cb=20140425200212" alt="Compound image by CID" width="250px" height="250px" id="compoundImage">
@@ -83,15 +83,12 @@
               "type": "array",
               "format": "table",
               "title": "Resulting products",
-              "description": "Insert the PubChem IDs of the final products (one at a time); this is used for the reaction searching and identifying!",
+              "description": "Insert the InChIKeys of the final products (one at a time); this is used for the reaction searching and identifying!",
               "uniqueItems": true,
               "items": {
-                "type": "integer",
-                "title": "product's PubChem ID"
+                "type": "string",
+                "title": "product's InChIKey"
               },
-              "default": [
-                0
-              ],
               "options": {
                 "disable_array_delete_last_row": true
               }
@@ -389,7 +386,27 @@
           type: 'POST',
           url: 'https://reactsearchdb.herokuapp.com/api/savedata',
           data: finaljson,
-          success: function(data) { alert("data: " + data); },
+          success: function(data) { statusLabel.innerText = "Upload successful! Feel free to reload the page and work on the next reaction, if you prefer."},
+          error: function (jqXHR, exception) {
+              var msg = '';
+              if (jqXHR.status === 0) {
+                  msg = 'Upload unsuccessful! There may be a problem with the database (ERROR 503), please contact me at t.me/mawansui as fast as possible.';
+              } else if (jqXHR.status == 200) {
+                msg = 'Upload successful! Feel free to reload the page and work on the next reaction, if you prefer.';
+              } else if (jqXHR.status == 404) {
+                  msg = 'Upload unsuccessful! Code: Requested page not found. [404]. Please contact me at t.me/mawansui as fast as possible.';
+              } else if (jqXHR.status == 500) {
+                  msg = 'Upload unsuccessful! Code: Internal Server Error [500]. Please contact me at t.me/mawansui as fast as possible.';
+              } else if (exception === 'timeout') {
+                  msg = 'Upload unsuccessful! Code: Time out error. Please contact me at t.me/mawansui as fast as possible.';
+              } else if (exception === 'abort') {
+                  msg = 'Upload unsuccessful! Code: Ajax request aborted. Please contact me at t.me/mawansui as fast as possible.';
+              } else {
+                  msg = 'Upload unsuccessful! And we don\'t even know, why :C Here is the error code:\n' + jqXHR.responseText + " Status: " + jqXHR.status + "\nHow did you like that? Please contact me at t.me/mawansui as fast as possible, and tell me the error code.";
+                  console.log(jqXHR);
+              }
+              statusLabel.innerText = msg;
+          },
           crossDomain: true,
           dataType: 'application/json'
         });
@@ -411,10 +428,10 @@
       var user_input = document.getElementById('exampleInputEmail1').value;
       console.log(user_input);
 
-      var urlToParseForCID = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/"+user_input+"/JSON";
-      console.log(urlToParseForCID);
+      var urlToParseForKey = "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/"+user_input+"/property/InChIKey/JSON";
+      console.log(urlToParseForKey);
 
-      var finalCID;
+      var finalKey;
 
       var getJSON = function(url, callback) {
         var xhr = new XMLHttpRequest();
@@ -431,21 +448,20 @@
         xhr.send();
     };
 
-    getJSON(urlToParseForCID,
+    getJSON(urlToParseForKey,
       function(err, data) {
         if (err != null) {
-          finalCID = "Sorry, something went wrong! Probably, PubChem doesn't have a record on ";
-          var pcidOutput = document.getElementById('PCID');
-          pcidOutput.innerText = finalCID + user_input + " yet.";
+          finalKey = "Sorry, something went wrong! Probably, PubChem doesn't have a record on ";
+          var keyOutput = document.getElementById('KEY');
+          keyOutput.innerText = finalKey + user_input + " yet.";
           var noImage = "http://vignette3.wikia.nocookie.net/plants-vs-zombies-roleplay/images/6/60/Question_Mark.png/revision/latest?cb=20140425200212";
           document.getElementById('compoundImage').src = noImage;
         } else {
-          console.log(data.PC_Compounds[0].id.id.cid);
-          finalCID = data.PC_Compounds[0].id.id.cid;
-          var pcidOutput = document.getElementById('PCID');
-          pcidOutput.innerText = "Result for "+user_input+": "+finalCID;
-
-          var imageFromPubChem = 'https://pubchem.ncbi.nlm.nih.gov/image/imagefly.cgi?cid='+finalCID+'&width=250&height=250';
+          console.log(data.PropertyTable.Properties[0].InChIKey);
+          finalKey = data.PropertyTable.Properties[0].InChIKey;
+          var keyOutput = document.getElementById('KEY');
+          keyOutput.innerText = "Result for "+user_input+": "+finalKey;
+          var imageFromPubChem = 'https://pubchem.ncbi.nlm.nih.gov/image/imagefly.cgi?cid='+data.PropertyTable.Properties[0].CID+'&width=250&height=250';
           document.getElementById('compoundImage').src = imageFromPubChem;
 
         }
@@ -466,7 +482,7 @@
 
     // Getting the PCID and image by the button press
 
-    document.getElementById('getPCID').addEventListener('click', function() {
+    document.getElementById('getINCHIKEY').addEventListener('click', function() {
       searchByCompoundName();
     });
 
