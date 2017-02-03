@@ -357,8 +357,12 @@
                   }
                 }
               }
-            }
+            },
 
+            "uploadedBy": {
+              "type": "string",
+              "description": "Type your name/nickname here. It will be useful later."
+            }
 
           }
         },
@@ -370,6 +374,8 @@
     });
 
     document.getElementById('submit').addEventListener('click', function() {
+      // Development stuff: http://localhost:8080/api/savedata
+      // Development stuff: https://reactsearchdb.herokuapp.com/api/getdata
       console.log(editor.getValue());
       var display = document.getElementById('output');
       var finaljson = editor.getValue(); // I need this!
