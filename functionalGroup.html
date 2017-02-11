@@ -9,7 +9,7 @@
 <!DOCTYPE html>
    <html lang="en">
      <head>
-       <title>Total Synthesis Addition</title>
+       <title>Functional Group Synthesis Addition</title>
        <meta name="viewport" content="width=device-width, initial-scale=1">
        <link href="https://bootswatch.com/lumen/bootstrap.min.css" rel="stylesheet">
 
@@ -61,7 +61,7 @@
        <div class='row'>
            <div class='span12 col-md-12 columns twelve large-12'>
              <br><br><br>
-               <h2>ReactSearch Total Synthesis Addition GUI</h2>
+               <h2>ReactSearch Functional Group Synthesis Addition GUI</h2>
                <p>The editor is generated from the JSON Schema with the help from <a href="https://github.com/jdorn/json-editor">json-editor</a> made by <a href="https://github.com/jdorn">@jdorn</a>.</p>
                <p>The PubChem InChIKey parser on the right was made and is actively maintained by <a href="https://github.com/mawansui">@mawansui</a> from the <a href="https://github.com/reactSearch">reactSearch team</a>.</p>
 
@@ -117,114 +117,11 @@
           "title": "Add new reaction to the database",
           "type": "object",
           "properties": {
-
-            "products": {
-              "type": "array",
-              "format": "table",
-              "title": "Resulting products",
-              "description": "Insert the InChIKeys of the final products (one at a time); this is used for the reaction searching and identifying!",
-              "uniqueItems": true,
-              "items": {
-                "type": "string",
-                "title": "product's InChIKey"
-              },
-              "options": {
-                "disable_array_delete_last_row": true
-              },
-              "propertyOrder" : 1
-            },
-
-            "reactionImageLink": {
-              "type": "string",
-              "description": "Reaction overview image link (chemical equation image), preferably in PNG. SHOULD BE HOSTED ON AN HTTPS-ENCRYPTED SERVER! EXAMPLE: https://raw.github.com/mawansui/reactions/id0.png",
-              "propertyOrder" : 2
-            },
-
-            "imageWidth": {
-              "type": "integer",
-              "description": "First number in 1024 x 680.",
-              "propertyOrder" : 3
-            },
-
-            "imageHeight": {
-              "type": "integer",
-              "description": "Second number in 1024 x 680.",
-              "propertyOrder" : 4
-            },
-
-            "conditions": {
-              "type": "string",
-              "description": "Conditions at which the reaction takes place. EXAMPLE: 20 deg C, 101.3 kPa",
-              "propertyOrder" : 5
-            },
-
-            "catalysts": {
-              "type": "string",
-              "description": "What catalyses the reaction?",
-              "format": "html",
-              "options": {
-                "wysiwyg": true
-              },
-              "propertyOrder" : 6
-            },
-
-            "procedure": {
-              "type": "string",
-              "format": "html",
-              "options": {
-                "wysiwyg": true
-              },
-              "propertyOrder" : 7
-            },
-
-            "sources": {
-              "type": "array",
-              "format": "table",
-              "title": "Sources",
-              "uniqueItems": true,
-              "description": "Anything from books/articles to webpages.",
-              "propertyOrder" : 8,
-              "items": {
-                "type": "object",
-                "title": "Source",
-                "properties": {
-                  "fullBibliograficInfo": {
-                   "type": "string"
-                  },
-                  "sourceImageLink": {
-                    "type": "string"
-                  },
-                  "DOI": {
-                   "type": "string"
-                  }
-                }
-              },
-              "options": {
-                "disable_array_delete_last_row": true
-              }
-            },
-
-            "keywords": {
-              "type": "array",
-              "format": "table",
-              "title": "Keywords to search by",
-              "description": "Type in the keywords by which users will be able to search for this reaction. Example: decarboxylation, hydrogentaion, oxidation, ...",
-              "uniqueItems": true,
-              "propertyOrder" : 9,
-              "items": {
-                "type": "string",
-                "title": "keyword"
-              },
-              "options": {
-                "disable_array_delete_last_row": true
-              }
-            },
-
             "functionalGroups": {
               "type": "array",
               "format": "table",
               "title": "Functional groups to search by",
-              "propertyOrder" : 10,
+              "propertyOrder" : 1,
               "options": {
                 "disable_array_delete_last_row": true
               },
@@ -411,10 +308,96 @@
               }
             },
 
+            "reactionImageLink": {
+              "type": "string",
+              "description": "Reaction overview image link (chemical equation image). CLICK ON THE RED BUTTON ON THE RIGHT",
+              "propertyOrder" : 2
+            },
+
+            "imageWidth": {
+              "type": "integer",
+              "description": "First number in 1024 x 680.",
+              "propertyOrder" : 3
+            },
+
+            "imageHeight": {
+              "type": "integer",
+              "description": "Second number in 1024 x 680.",
+              "propertyOrder" : 4
+            },
+
+            "conditions": {
+              "type": "string",
+              "description": "Conditions at which the reaction takes place. EXAMPLE: 20 deg C, 101.3 kPa",
+              "propertyOrder" : 5
+            },
+
+            "catalysts": {
+              "type": "string",
+              "description": "What catalyses the reaction?",
+              "format": "html",
+              "options": {
+                "wysiwyg": true
+              },
+              "propertyOrder" : 6
+            },
+
+            "procedure": {
+              "type": "string",
+              "format": "html",
+              "options": {
+                "wysiwyg": true
+              },
+              "propertyOrder" : 7
+            },
+
+            "sources": {
+              "type": "array",
+              "format": "table",
+              "title": "Sources",
+              "uniqueItems": true,
+              "description": "Anything from books/articles to webpages.",
+              "propertyOrder" : 8,
+              "items": {
+                "type": "object",
+                "title": "Source",
+                "properties": {
+                  "fullBibliograficInfo": {
+                   "type": "string"
+                  },
+                  "sourceImageLink": {
+                    "type": "string"
+                  },
+                  "DOI": {
+                   "type": "string"
+                  }
+                }
+              },
+              "options": {
+                "disable_array_delete_last_row": true
+              }
+            },
+
+            "keywords": {
+              "type": "array",
+              "format": "table",
+              "title": "Keywords to search by",
+              "description": "Type in the keywords by which users will be able to search for this reaction. Example: decarboxylation, hydrogentaion, oxidation, ...",
+              "uniqueItems": true,
+              "propertyOrder" : 9,
+              "items": {
+                "type": "string",
+                "title": "keyword"
+              },
+              "options": {
+                "disable_array_delete_last_row": true
+              }
+            },
+
             "uploadedBy": {
               "type": "string",
               "description": "Type your name/nickname here. It will be useful later.",
-              "propertyOrder" : 11
+              "propertyOrder" : 10
             }
 
           }
