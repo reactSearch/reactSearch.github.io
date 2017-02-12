@@ -75,17 +75,50 @@
             <div class="col-lg-12 text-center">
                 <h1>Welcome to the ReactSearch website!</h1>
                 <p class="lead">Created for chemists by chemists.</p>
-                <div class="col-lg-10">
-                  <input type="text" class="form-control" placeholder="IUPAC or rational nomenclature" id="userInput">
+                <p>Search by:</p>
+                <div class="col-lg-1">
+                  <button class="btn btn-info" type="button" id="drawButton" data-toggle="modal" data-target="#myModal">Draw</button>
                   <div class="col-xs"><br></div>
                 </div>
-                <div class="col-lg-1">
+                <div class="col-lg-8">
+                  <input type="text" class="form-control" placeholder="IUPAC or rational name" id="userInput">
+                  <div class="col-xs"><br></div>
+                </div>
+                <div class="dropdown col-lg-1">
+                  <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">Search By
+                  <span class="caret"></span></button>
+                  <div class="col-xs"><br></div>
+                  <ul class="dropdown-menu">
+                    <li id="1"><a href="#">IUPAC or rational name</a></li>
+                    <li id="2"><a href="#">Keyword</a></li>
+                  </ul>
+                </div>
+                <div class="col-lg-2">
                   <button class="btn btn-success" type="button" id="searchButton">Search</button>
                   <div class="col-xs"><br></div>
                 </div>
-                <div class="col-lg-1">
-                  <button class="btn btn-primary" type="button" id="searchButton">Editor</button>
+
+                <!-- Modal -->
+
+                <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">ChemAxon MarvinJS &copy; Molecular Editor</h4>
+                      </div>
+                      <div class="modal-body">
+                        <iframe id="sketch" width="100%" height="400" src="https://reactsearchdb.herokuapp.com/editor.html" frameborder="0"></iframe>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal" id="editorClose">Save and close</button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
+
+                <!-- End of modal -->
+
             </div>
         </div>
         <!-- /.row -->
@@ -94,16 +127,75 @@
     </div>
     <!-- /.container -->
 
-    <!-- Search script -->
-    <script>
-      document.getElementById('searchButton').addEventListener('click', function() {
-        var input = document.getElementById('userInput').value;
-        console.log(input);
-      });
-    </script>
+    <!-- MarvinJS scripts -->
+    <script src="https://reactsearchdb.herokuapp.com/gui/lib/promise-1.0.0.min.js"></script>
+    <script src="https://reactsearchdb.herokuapp.com/js/marvinjslauncher.js"></script>
 
     <!-- jQuery Version 1.11.1 -->
     <script src="js/jquery.js"></script>
+
+    <!-- Search script -->
+    <script>
+
+    var selector;
+
+    document.getElementById('1').addEventListener('click', function() {
+      selector = 1;
+      console.log('hello world 1');
+      document.getElementById('userInput').placeholder = 'IUPAC or rational name';
+    });
+
+    document.getElementById('2').addEventListener('click', function() {
+      selector = 2;
+      console.log('hello world 2');
+      document.getElementById('userInput').placeholder = 'Keyword';
+    });
+
+      document.getElementById('searchButton').addEventListener('click', function() {
+        var input = document.getElementById('userInput').value;
+        var InChIKeyURL = 'https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/'+input+'/property/InChIKey/JSON';
+        var resultedKey = "";
+        $.get(InChIKeyURL, function(response) {
+            console.log(response.PropertyTable.Properties[0].InChIKey);
+            resultedKey = response.PropertyTable.Properties[0].InChIKey;
+            console.log('* * * * ' + resultedKey);
+        }).fail(function(r) {
+          console.log(r.statusText);
+        });
+      });
+
+
+      var marvinSketcherInstance;
+
+      $(document).ready(function handleDocumentReady (e) {
+      	var p = MarvinJSUtil.getEditor("#sketch");
+      	p.then(function (sketcherInstance) {
+      		marvinSketcherInstance = sketcherInstance;
+      		initControl();
+      	}, function (error) {
+      		alert("Cannot retrieve sketcher instance from iframe:"+error);
+      	});
+      });
+
+      function initControl () {
+
+      	// get mol button
+      	$("#editorClose").on("click", function (e) {
+      		marvinSketcherInstance.exportStructure("inchikey").then(function(source) {
+      			console.log(source);
+            document.getElementById('userInput').value = source;
+      		}, function(error) {
+      			alert("Molecule export failed:"+error);
+      		});
+      	});
+      }
+
+
+
+
+
+
+    </script>
 
     <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>

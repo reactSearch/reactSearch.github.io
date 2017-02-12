@@ -445,7 +445,7 @@
           type: 'POST',
           url: 'https://reactsearchdb.herokuapp.com/api/savedata',
           data: finaljson,
-          success: function(data) { statusLabel.innerText = "Upload successful! Feel free to reload the page and work on the next reaction, if you prefer."},
+          success: function(data) { statusLabel.innerText = "Upload successful! Feel free to reload the page and work on the next reaction, if you prefer."; location.reload(true);},
           error: function (jqXHR, exception) {
               var msg = '';
               if (jqXHR.status === 0) {
