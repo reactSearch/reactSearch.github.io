@@ -63,7 +63,7 @@
              <br><br><br>
                <h2>ReactSearch Functional Group Synthesis Addition GUI</h2>
                <p>The editor is generated from the JSON Schema with the help from <a href="https://github.com/jdorn/json-editor">json-editor</a> made by <a href="https://github.com/jdorn">@jdorn</a>.</p>
-               <p>The PubChem InChIKey parser on the right was made and is actively maintained by <a href="https://github.com/mawansui">@mawansui</a> from the <a href="https://github.com/reactSearch">reactSearch team</a>.</p>
+               <p>The helpful utilities on the right were developed and are actively maintained by <a href="https://github.com/mawansui">@mawansui</a> from the <a href="https://github.com/reactSearch">reactSearch team</a>.</p>
 
                <br>
                <div class="row">
@@ -84,26 +84,17 @@
                    <br><br>
                  </div>
                  <div class="col-md-4">
-                 <form>
-                   <div class="form-group">
                     <br><br><br>
-                    <a href="http://imgh.us/" target="_blank"><button type="button" class="btn btn-danger">UpLoad Reaction Image</button></a><br><small>Paste your link and copy the resulting one</small>
-                    <br><br><br>
-                     <label for="exampleInputEmail1">Get InChIKey for any compound by it's IUPAC or rational name</label>
-                     <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Use IUPAC or rational nomenclature">
-                   </div>
-                   <button type="button" class="btn btn-default" id="getINCHIKEY">Get InChIKey</button>
-                   <br><br>
-
-
-                     <label id="KEY">Result will be displayed here</label>
-
-
-                     <img src="http://vignette3.wikia.nocookie.net/plants-vs-zombies-roleplay/images/6/60/Question_Mark.png/revision/latest?cb=20140425200212" alt="Compound image by CID" width="250px" height="250px" id="compoundImage">
-
-
+                    <a href="http://imgh.us/" target="_blank"><button type="button" class="btn btn-danger">UpLoad Reaction Image</button></a><br>Paste your link and copy the resulting one
+                  <br><br><br><br>
+                  <form>
+                    <label for="publicationMetadata">Type in the publication metadata (the more the better)</label>
+                    <input type="text" class="form-control" id="publicationMetadata" placeholder="Copy n paste it!">
+                    <br>
+                    <button type="button" class="btn btn-default" id="getDOI">Get DOI</button>
+                    <br><br>
+                    <label id="DOI">DOI will be displayed here</label>
                   </form>
-                  <br><br>
                </div>
                </div>
            </div>
@@ -462,7 +453,7 @@
       }
     });
 
-    var user_input = document.getElementById('exampleInputEmail1').value;
+    // var user_input = document.getElementById('exampleInputEmail1').value;
 
 
     function searchByCompoundName() {
@@ -511,21 +502,43 @@
     }
 
     // Getting the PCID and image by the enter key
-    document.getElementById('exampleInputEmail1').addEventListener('keypress', function(e){
-      var key = e.which || e.keyCode;
-      if (key === 13) {
-        e.preventDefault();
-        console.log('hello world');
-        searchByCompoundName();
-      }
-      return;
-    });
+    // document.getElementById('exampleInputEmail1').addEventListener('keypress', function(e){
+    //   var key = e.which || e.keyCode;
+    //   if (key === 13) {
+    //     e.preventDefault();
+    //     console.log('hello world');
+    //     searchByCompoundName();
+    //   }
+    //   return;
+    // });
 
 
     // Getting the PCID and image by the button press
 
-    document.getElementById('getINCHIKEY').addEventListener('click', function() {
-      searchByCompoundName();
+    // document.getElementById('getINCHIKEY').addEventListener('click', function() {
+    //   searchByCompoundName();
+    // });
+
+    document.getElementById('getDOI').addEventListener('click', function() {
+      document.getElementById('DOI').innerText = 'Searching for DOI...';
+      console.log('DOI SEARCH HAPPENING');
+      var metadataInput = document.getElementById('publicationMetadata').value;
+      console.log(metadataInput);
+      var parseDoiURL = 'http://api.crossref.org/works?query='+metadataInput;
+      console.log('Parseing this: ' + parseDoiURL);
+      $.get(parseDoiURL, function(response) {
+        try {
+          console.log(response.message.items[0].DOI);
+          var crossrefResponse = response.message.items[0].DOI;
+          document.getElementById('DOI').innerHTML = '<strong>Most likely,</strong> this source\'s DOI is ' + crossrefResponse;
+        } catch (err) {
+          console.log(err);
+          document.getElementById('DOI').innerText = 'Sorry, couldn\'t find any DOI for this one.';
+        }
+      }).fail(function(r) {
+        console.log(r.statusText);
+        document.getElementById('DOI').innerText = 'A mistake occured! Please contact @mawansui in Telegram.';
+      });
     });
 
    </script>

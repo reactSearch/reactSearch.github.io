@@ -98,6 +98,9 @@
                   <button class="btn btn-success" type="button" id="searchButton">Search</button>
                   <div class="col-xs"><br></div>
                 </div>
+                <div id="searchResults" class="text-left" >
+
+                </div>
 
                 <!-- Modal -->
 
@@ -109,6 +112,7 @@
                         <h4 class="modal-title" id="myModalLabel">ChemAxon MarvinJS &copy; Molecular Editor</h4>
                       </div>
                       <div class="modal-body">
+                        <p>We are at the process of acquiring a license right now, so soon it will work!</p>
                         <iframe id="sketch" width="100%" height="400" src="https://reactsearch.github.io/marvinjs/editor.html" frameborder="0"></iframe>
                       </div>
                       <div class="modal-footer">
@@ -119,6 +123,25 @@
                 </div>
 
                 <!-- End of modal -->
+
+                <!-- Search result modal -->
+                <div class="modal fade" id="searchResultModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Search result</h4>
+                      </div>
+                      <div class="modal-body">
+                        <p>Sorry, nothing here right now, but this functionality will be added soon. We are working hard to keep up with the pace of our project's growth :)
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Got it!</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <!-- End of search result modal -->
 
             </div>
         </div>
@@ -149,31 +172,96 @@
       });
     });
 
-    var selector;
+    var selector = 1;
+    var html;
+    var newHTML;
 
     document.getElementById('1').addEventListener('click', function() {
+      // location.reload(); XXX: Too clumsy! Nobody does it in the year 2017!
+      document.getElementById('userInput').value = '';
+      document.getElementById('searchResults').innerHTML = '<div></div>';
+
       selector = 1;
       console.log('hello world 1');
       document.getElementById('userInput').placeholder = 'IUPAC or rational name';
     });
 
     document.getElementById('2').addEventListener('click', function() {
+      // location.reload();
+      document.getElementById('userInput').value = '';
+      document.getElementById('searchResults').innerHTML = '<div></div>';
+
       selector = 2;
       console.log('hello world 2');
       document.getElementById('userInput').placeholder = 'Keyword';
     });
 
     document.getElementById('searchButton').addEventListener('click', function() {
-      var input = document.getElementById('userInput').value;
-      var InChIKeyURL = 'https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/'+input+'/property/InChIKey/JSON';
-      var resultedKey = "";
-      $.get(InChIKeyURL, function(response) {
-          console.log(response.PropertyTable.Properties[0].InChIKey);
-          resultedKey = response.PropertyTable.Properties[0].InChIKey;
-          console.log('* * * * ' + resultedKey);
-      }).fail(function(r) {
-        console.log(r.statusText);
-      });
+      switch (selector) {
+        case 1:
+          var input = document.getElementById('userInput').value;
+          var InChIKeyURL = 'https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/'+input+'/property/InChIKey/JSON';
+          var resultedKey = "";
+          $.get(InChIKeyURL, function(response) {
+              console.log(response.PropertyTable.Properties[0].InChIKey);
+              resultedKey = response.PropertyTable.Properties[0].InChIKey;
+              console.log('* * * * ' + resultedKey);
+              var getReactionApi = "https://reactsearchdb.herokuapp.com/api/getreaction/"+resultedKey;
+              $.get(getReactionApi, function(response) {
+                console.log(response);
+                var databaseResponse = response;
+                newHTML = [];
+                for (var i = 0; i < databaseResponse[0].keywords.length; i++) {
+                  if (i == 0 ) {
+                    newHTML.push('<span>'+databaseResponse[0].keywords[i]+'</span>');
+                  } else {
+                    newHTML.push('<br><span>'+databaseResponse[0].keywords[i]+'</span>');
+                  }
+                }
+                html = `
+                  <table class=\"table table-hover\">
+                    <thead>
+                      <tr>
+                        <th>Reaction overview</th>
+                        <th>Keywords</th>
+                        <th>Source</th>
+                        <th>Read more</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td>
+                          <img src=\"`+databaseResponse[0].reactionImageLink+`"\" class=\"img-responsive\" width=\"300\" height=\"300\">
+                        </td>
+                        <td>`+newHTML+`</td>
+                        <td>`+databaseResponse[0].sources[0].fullBibliograficInfo+`<br>
+                        DOI: `+databaseResponse[0].sources[0].DOI+`
+                        </td>
+                        <td>
+                          <button class=\"btn btn-primary\" type=\"button\" id=\"readMoreButton\" data-toggle=\"modal\" data-target=\"#searchResultModal\" searchData=\""+databaseResponse[0].reactionImageLink+"\">Read more</button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                `;
+                document.getElementById('searchResults').innerHTML = html;
+              });
+          }).fail(function(r) {
+            console.log(r.statusText);
+            document.getElementById('searchResults').innerHTML = '<div><p>Sorry, something went wrong while getting your reqesut\'s InChIKey. Please, <a href="#">contact us</a> and descibe your problem – we are there to help!</p></div>'
+          });
+          break;
+        case 2:
+          console.log('NUMBER TWO SELECTED YO');
+          break;
+      }
+    });
+
+    $('#searchResultModal').on('show.bs.modal', function(e) {
+      var button = $(e.relatedTarget);
+      var recepient = button.data('searchData'); //JSON STRINGIFY doesnt work sadly enough
+      var modal = $(this);
+      console.log(recepient);
     });
 
 

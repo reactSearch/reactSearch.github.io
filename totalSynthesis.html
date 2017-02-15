@@ -455,7 +455,7 @@
           type: 'POST',
           url: 'https://reactsearchdb.herokuapp.com/api/savedata',
           data: finaljson,
-          success: function(data) { statusLabel.innerText = "Upload successful! Feel free to reload the page and work on the next reaction, if you prefer."; location.reload(true);},
+          success: function(data) { statusLabel.innerHTML = "Upload successful! Feel free to <b>reload the page</b> and work on the next reaction, if you prefer.";},
           error: function (jqXHR, exception) {
               var msg = '';
               if (jqXHR.status === 0) {
@@ -485,7 +485,7 @@
         // });
         statusLabel.innerText = "Upload successful! Feel free to reload the page and work on the next reaction, if you prefer."
       } else {
-        statusLabel.innerText = "Sorry, you\'ve typed in an incorrect password. Upload unsuccessful."
+        statusLabel.innerHTML = "Sorry, you\'ve typed in <b>an incorrect password</b>. Upload unsuccessful."
       }
     });
 
@@ -556,6 +556,7 @@
     });
 
     document.getElementById('getDOI').addEventListener('click', function() {
+      document.getElementById('DOI').innerText = 'Searching for DOI...';
       console.log('DOI SEARCH HAPPENING');
       var metadataInput = document.getElementById('publicationMetadata').value;
       console.log(metadataInput);
