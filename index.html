@@ -59,6 +59,9 @@
                         <a href="./functionalGroup.html">Add Func Group Synthesis</a>
                     </li>
                     <li>
+                        <a href="#">Add Reaction</a>
+                    </li>
+                    <li>
                         <a href="#">Contact us</a>
                     </li>
                 </ul>
@@ -83,6 +86,7 @@
                 </div>
                 <div class="col-lg-8">
                   <input type="text" class="form-control" placeholder="IUPAC or rational name" id="userInput">
+                  <p class="text-left" id="selectedModeLabel"><i>Searching by name</i></p>
                   <div class="col-xs"><br></div>
                 </div>
                 <div class="dropdown col-lg-1">
@@ -180,6 +184,7 @@
       // location.reload(); XXX: Too clumsy! Nobody does it in the year 2017!
       document.getElementById('userInput').value = '';
       document.getElementById('searchResults').innerHTML = '<div></div>';
+      document.getElementById('selectedModeLabel').innerHTML = "<p><i>Searching by name</i></p>";
 
       selector = 1;
       console.log('hello world 1');
@@ -190,6 +195,7 @@
       // location.reload();
       document.getElementById('userInput').value = '';
       document.getElementById('searchResults').innerHTML = '<div></div>';
+      document.getElementById('selectedModeLabel').innerHTML = "<p><i>Searching by a keyword</i></p>";
 
       selector = 2;
       console.log('hello world 2');
@@ -197,6 +203,9 @@
     });
 
     document.getElementById('searchButton').addEventListener('click', function() {
+      $('html,body').animate({
+        scrollTop: $("#searchResults").offset().top},
+        'slow');
       switch (selector) {
         case 1:
           var input = document.getElementById('userInput').value;
@@ -210,6 +219,7 @@
               $.get(getReactionApi, function(response) {
                 console.log(response);
                 var databaseResponse = response;
+                if (databaseResponse.length > 0) {
                 newHTML = [];
                 for (var i = 0; i < databaseResponse[0].keywords.length; i++) {
                   if (i == 0 ) {
@@ -219,7 +229,7 @@
                   }
                 }
                 html = `
-                  <table class=\"table table-hover\">
+                  <table class=\"table table-bordered\">
                     <thead>
                       <tr>
                         <th>Reaction overview</th>
@@ -245,6 +255,9 @@
                   </table>
                 `;
                 document.getElementById('searchResults').innerHTML = html;
+              } else {
+                document.getElementById('searchResults').innerHTML = '<div><p>Sorry, we don\'t have this compound\'s synthesis now.</div>'
+              }
               });
           }).fail(function(r) {
             console.log(r.statusText);
@@ -253,6 +266,43 @@
           break;
         case 2:
           console.log('NUMBER TWO SELECTED YO');
+          var inputKeyword = document.getElementById('userInput').value;
+          var keywordSearchAPI = "https://reactsearchdb.herokuapp.com/api/keywordsearch/"+inputKeyword.toLowerCase();
+          $.get(keywordSearchAPI, function(response) {
+            console.log(response);
+            var databaseResponse = response;
+            var newKeywordHTML = [];
+            var keywordSourcesHTML = [];
+
+            for (var i = 0; i < databaseResponse.length; i++) {
+              for (var n = 0; n < databaseResponse[i].sources.length; n++) {
+                keywordSourcesHTML.push('<li>'+databaseResponse[i].sources[n].fullBibliograficInfo+'<br><b>DOI: </b>'+databaseResponse[i].sources[n].DOI+'</li>');
+              }
+              newKeywordHTML.push('<tr><td><img src=\"'+databaseResponse[i].reactionImageLink+'\" class=\"img-responsive\" width=\"300\" height=\"300\"></td><td><ul>'+keywordSourcesHTML.join("<br>")+'</ul></td><td><button class=\"btn btn-primary\" type=\"button\" id=\"readMoreButton\" data-toggle=\"modal\" data-target=\"#searchResultModal\">Read more</button></td></tr>');
+            }
+            var html = `
+              <table class=\"table table-bordered\">
+                <thead>
+                  <tr>
+                    <th>Reaction overview</th>
+                    <th>Sources</th>
+                    <th>Read more</th>
+                  </tr>
+                </thead>
+                <tbody>`+newKeywordHTML.join("")+`
+                </tbody>
+                </table>
+            `;
+            if (databaseResponse.length > 0) {
+              document.getElementById('searchResults').innerHTML = html;
+            } else {
+              document.getElementById('searchResults').innerHTML = '<p>Sorry, couldn\'t find anything by your query :c</p>';
+            }
+          }).fail(function(r) {
+            console.log(r.statusText);
+            document.getElementById('searchResults').innerHTML = '<div><p>Sorry, something went wrong while getting your reqesut\'s InChIKey. Please, <a href="#">contact us</a> and descibe your problem – we are there to help!</p></div>'
+          });
+
           break;
       }
     });
