@@ -452,13 +452,11 @@
       // statusLabel.innerText = password;
       display.value = JSON.stringify(finaljson);
 
-      if (password == "osresearch17") {
-
         $.ajax({
           type: 'POST',
-          url: 'https://reactsearchdb.herokuapp.com/api/savedata',
+          url: 'https://reactsearchdb.herokuapp.com/api/savedata/'+password,
           data: finaljson,
-          success: function(data) { statusLabel.innerHTML = "Upload successful! Feel free to <b>reload the page</b> and work on the next reaction, if you prefer.";},
+          success: function(data) { alert(data); statusLabel.innerHTML = "Upload successful! Feel free to <b>reload the page</b> and work on the next reaction, if you prefer.";},
           error: function (jqXHR, exception) {
               var msg = '';
               if (jqXHR.status === 0) {
@@ -482,14 +480,7 @@
           crossDomain: true,
           dataType: 'application/json'
         });
-
-        // $.post("https://reactsearchdb.herokuapp.com/api/savedata", finaljson, function(){
-        //   console.log('Success? I guess?');
-        // });
-        statusLabel.innerText = "Upload successful! Feel free to reload the page and work on the next reaction, if you prefer."
-      } else {
-        statusLabel.innerHTML = "Sorry, you\'ve typed in <b>an incorrect password</b>. Upload unsuccessful."
-      }
+        // statusLabel.innerText = "Upload successful! Feel free to reload the page and work on the next reaction, if you prefer."
     });
 
     var user_input = document.getElementById('exampleInputEmail1').value;

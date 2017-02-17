@@ -415,47 +415,36 @@
       var statusLabel = document.getElementById('uploadStatus');
       // statusLabel.innerText = password;
       display.value = JSON.stringify(finaljson);
-
-      if (password == "osresearch17") {
-
-        $.ajax({
-          type: 'POST',
-          url: 'https://reactsearchdb.herokuapp.com/api/savedata',
-          data: finaljson,
-          success: function(data) { statusLabel.innerText = "Upload successful! Feel free to reload the page and work on the next reaction, if you prefer."},
-          error: function (jqXHR, exception) {
-              var msg = '';
-              if (jqXHR.status === 0) {
-                  msg = 'Upload unsuccessful! There may be a problem with the database (ERROR 503), please contact me at t.me/mawansui as fast as possible.';
-              } else if (jqXHR.status == 200) {
-                msg = 'Upload successful! Feel free to reload the page and work on the next reaction, if you prefer.';
-              } else if (jqXHR.status == 404) {
-                  msg = 'Upload unsuccessful! Code: Requested page not found. [404]. Please contact me at t.me/mawansui as fast as possible.';
-              } else if (jqXHR.status == 500) {
-                  msg = 'Upload unsuccessful! Code: Internal Server Error [500]. Please contact me at t.me/mawansui as fast as possible.';
-              } else if (exception === 'timeout') {
-                  msg = 'Upload unsuccessful! Code: Time out error. Please contact me at t.me/mawansui as fast as possible.';
-              } else if (exception === 'abort') {
-                  msg = 'Upload unsuccessful! Code: Ajax request aborted. Please contact me at t.me/mawansui as fast as possible.';
-              } else {
-                  msg = 'Upload unsuccessful! And we don\'t even know, why :C Here is the error code:\n' + jqXHR.responseText + " Status: " + jqXHR.status + "\nHow did you like that? Please contact me at t.me/mawansui as fast as possible, and tell me the error code.";
-                  console.log(jqXHR);
-              }
-              statusLabel.innerText = msg;
-          },
-          crossDomain: true,
-          dataType: 'application/json'
-        });
-
-        // $.post("https://reactsearchdb.herokuapp.com/api/savedata", finaljson, function(){
-        //   console.log('Success? I guess?');
-        // });
-        statusLabel.innerText = "Upload successful! Feel free to reload the page and work on the next reaction, if you prefer."
-      } else {
-        statusLabel.innerText = "Sorry, you\'ve typed in an incorrect password. Upload unsuccessful."
-      }
-    });
-
+      $.ajax({
+        type: 'POST',
+        url: 'https://reactsearchdb.herokuapp.com/api/savedata/'+password,
+        data: finaljson,
+        success: function(data) { alert(data); statusLabel.innerHTML = "Upload successful! Feel free to <b>reload the page</b> and work on the next reaction, if you prefer.";},
+        error: function (jqXHR, exception) {
+            var msg = '';
+            if (jqXHR.status === 0) {
+                msg = 'Upload unsuccessful! There may be a problem with the database (ERROR 503), please contact me at t.me/mawansui as fast as possible.';
+            } else if (jqXHR.status == 200) {
+              msg = 'Upload successful! Feel free to reload the page and work on the next reaction, if you prefer.';
+            } else if (jqXHR.status == 404) {
+                msg = 'Upload unsuccessful! Code: Requested page not found. [404]. Please contact me at t.me/mawansui as fast as possible.';
+            } else if (jqXHR.status == 500) {
+                msg = 'Upload unsuccessful! Code: Internal Server Error [500]. Please contact me at t.me/mawansui as fast as possible.';
+            } else if (exception === 'timeout') {
+                msg = 'Upload unsuccessful! Code: Time out error. Please contact me at t.me/mawansui as fast as possible.';
+            } else if (exception === 'abort') {
+                msg = 'Upload unsuccessful! Code: Ajax request aborted. Please contact me at t.me/mawansui as fast as possible.';
+            } else {
+                msg = 'Upload unsuccessful! And we don\'t even know, why :C Here is the error code:\n' + jqXHR.responseText + " Status: " + jqXHR.status + "\nHow did you like that? Please contact me at t.me/mawansui as fast as possible, and tell me the error code.";
+                console.log(jqXHR);
+            }
+            statusLabel.innerText = msg;
+        },
+        crossDomain: true,
+        dataType: 'application/json'
+      });
+      // statusLabel.innerText = "Upload successful! Feel free to reload the page and work on the next reaction, if you prefer."
+      });
     // var user_input = document.getElementById('exampleInputEmail1').value;
 
 
